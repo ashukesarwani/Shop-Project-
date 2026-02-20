@@ -2,48 +2,55 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Trash2, Plus, Minus } from "lucide-react";
 import jsPDF from "jspdf";
 
+type Product = {
+  id: number;
+  name: string;
+  price: number;
+  unit: string;
+  image: string; // local path like "/products/rice.jpg"
+};
+
+type CartItem = Product & { qty: number };
+
 export default function KesarwaniStore() {
-  const [products] = useState([
+  const [products] = useState<Product[]>([
     {
       id: 1,
       name: "Basmati Rice",
       price: 80,
       unit: "kg",
-      image: "https://source.unsplash.com/300x200/?rice",
+      image: "/products/rice.jpg",
     },
     {
       id: 2,
       name: "Toor Dal",
       price: 120,
       unit: "kg",
-      image: "https://source.unsplash.com/300x200/?lentils",
+      image: "/products/toor-dal.jpg",
     },
     {
       id: 3,
       name: "Sugar",
       price: 45,
       unit: "kg",
-      image: "https://source.unsplash.com/300x200/?sugar",
+      image: "/products/sugar.jpg",
     },
   ]);
 
   const [search, setSearch] = useState("");
-  const [cart, setCart] = useState<any[]>([]);
+  const [cart, setCart] = useState<CartItem[]>([]);
   const [orders, setOrders] = useState<any[]>([]);
 
-  const addToCart = (p: any) => {
+  const addToCart = (p: Product) => {
     const found = cart.find((i) => i.id === p.id);
     if (found) {
-      setCart(
-        cart.map((i) =>
-          i.id === p.id ? { ...i, qty: i.qty + 0.5 } : i
-        )
-      );
+      setCart(cart.map((i) => (i.id === p.id ? { ...i, qty: i.qty + 0.5 } : i)));
     } else {
       setCart([...cart, { ...p, qty: 1 }]);
     }
@@ -52,9 +59,7 @@ export default function KesarwaniStore() {
   const updateQty = (id: number, change: number) => {
     setCart(
       cart.map((i) =>
-        i.id === id
-          ? { ...i, qty: Math.max(0.5, i.qty + change) }
-          : i
+        i.id === id ? { ...i, qty: Math.max(0.5, i.qty + change) } : i
       )
     );
   };
@@ -85,11 +90,7 @@ export default function KesarwaniStore() {
     pdf.text("Kesarwani General Store Invoice", 20, 20);
 
     order.items.forEach((i: any, idx: number) => {
-      pdf.text(
-        `${i.name} ${i.qty}${i.unit} - ₹${i.qty * i.price}`,
-        20,
-        40 + idx * 10
-      );
+      pdf.text(`${i.name} ${i.qty}${i.unit} - ₹${i.qty * i.price}`, 20, 40 + idx * 10);
     });
 
     pdf.text(`Total: ₹${order.total}`, 20, 80);
@@ -128,26 +129,27 @@ export default function KesarwaniStore() {
       </nav>
 
       {/* PRODUCTS */}
-      <div
-        id="products"
-        className="p-6 grid md:grid-cols-3 gap-4 flex-grow"
-      >
+      <div id="products" className="p-6 grid md:grid-cols-3 gap-4 flex-grow">
         {filteredProducts.map((p) => (
           <Card key={p.id}>
             <CardContent>
-              <img
-                src={p.image}
-                alt={p.name}
-                className="w-full h-40 object-cover rounded mb-2"
-              />
+              <div className="relative w-full h-40 mb-2">
+                <Image
+                  src={p.image}
+                  alt={p.name}
+                  fill
+                  className="object-cover rounded"
+                  sizes="(max-width: 768px) 100vw, 33vw"
+                  priority={p.id === 1}
+                />
+              </div>
+
               <h3 className="font-bold">{p.name}</h3>
               <p>
                 ₹{p.price}/{p.unit}
               </p>
-              <Button
-                className="mt-2 w-full"
-                onClick={() => addToCart(p)}
-              >
+
+              <Button className="mt-2 w-full" onClick={() => addToCart(p)}>
                 Add
               </Button>
             </CardContent>
@@ -160,19 +162,20 @@ export default function KesarwaniStore() {
         <h2 className="font-bold">Cart</h2>
 
         {cart.map((i) => (
-          <div
-            key={i.id}
-            className="flex justify-between items-center mt-2"
-          >
+          <div key={i.id} className="flex justify-between items-center mt-2">
             <span>{i.name}</span>
+
             <div className="flex gap-2 items-center">
               <Button size="icon" onClick={() => updateQty(i.id, -0.5)}>
                 <Minus />
               </Button>
+
               {i.qty}
+
               <Button size="icon" onClick={() => updateQty(i.id, 0.5)}>
                 <Plus />
               </Button>
+
               <Button
                 size="icon"
                 variant="destructive"
@@ -204,20 +207,13 @@ export default function KesarwaniStore() {
       </div>
 
       {/* FOOTER */}
-      <footer
-        id="about"
-        className="bg-gray-800 text-white p-6 mt-auto"
-      >
+      <footer id="about" className="bg-gray-800 text-white p-6 mt-auto">
         <p className="text-center">
           © {new Date().getFullYear()} Kesarwani General Store
         </p>
-        <br></br>
-        <p className="text-center">
-          📞 +917668392051 | +917380785853
-        </p>
-        <p className="text-center">
-          📧 satishchandrakesarwani94@gmail.com
-        </p>
+        <br />
+        <p className="text-center">📞 +917668392051 | +917380785853</p>
+        <p className="text-center">📧 satishchandrakesarwani94@gmail.com</p>
       </footer>
     </div>
   );
