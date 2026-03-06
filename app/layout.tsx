@@ -20,7 +20,7 @@ const GSTIN = "11223344";
 const BUSINESS_HOURS = ["Mon-Sat 09:00-21:30", "Sun 10:00-20:00"];
 
 // ✅ Replace with your real Google Maps embed src (Share → Embed a map → copy src)
-const MAPS_EMBED ="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14408.09569479541!2d81.8333648!3d25.470876599999997!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x399acb07d6253d87%3A0x7034be97a860df73!2sKesarwani%20general%20Store!5e0!3m2!1sen!2sin!4v1772480561023!5m2!1sen!2sin";
+const MAPS_EMBED = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14408.09569479541!2d81.8333648!3d25.470876599999997!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x399acb07d6253d87%3A0x7034be97a860df73!2sKesarwani%20general%20Store!5e0!3m2!1sen!2sin!4v1772480561023!5m2!1sen!2sin";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -220,7 +220,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 />
               </div>
               <p className="mt-2 text-xs text-white/60">
-                This map helps customers trust your business — helpful for AdSense review.
+                Visit our store location in Prayagraj for daily grocery essentials and household needs.
               </p>
             </div>
           </div>
